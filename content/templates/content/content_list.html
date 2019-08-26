@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!---메세지-->
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% for foo in object_list %}
+    <a href="{% url 'detail' pk=foo.id %}"><p>{{ foo.title }}</p></a>
+    <p>{{ foo.content |safe |truncatechars:3 }}</p>
+    {% if foo.user_count < foo.user_max_count %}
+        <p>{{ foo.user_count }} | {{ foo.user_max_count }} 참여 </p>
+        {# 현재시간 {% now "SHORT_DATE_FORMAT" %}#}
+        <p>모집기간 : {{ foo.deadline }} 까지</p>
+
+    {% elif foo.date_overlap or foo.count_overlap %}
+        <p>참여 마감!</p>
+    {% endif %}
+
+{% endfor %}
+
+
+
+<a href="{% url 'new' %}">create</a>
+
+</body>
+</html>

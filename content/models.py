@@ -40,5 +40,3 @@ class Post(models.Model):
     # def count_overlap(self):
     #     if self.user_count < self.user_max_count:
     #         return ValueError("넘지 못함")
-
-

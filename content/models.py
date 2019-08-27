@@ -2,8 +2,9 @@ from django.db import models
 
 from django import forms
 from django.core.exceptions import ValidationError
-from datetime import date,timedelta
 
+from datetime import date,timedelta
+from account.models import user
 
 def date_check(value):
     if date.today() > value:
@@ -12,6 +13,7 @@ def date_check(value):
         return value
 
 class Post(models.Model):
+    author = models.ForeignKey(user, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     content = models.TextField()
 
@@ -29,10 +31,13 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    def deta(self):
+        return date.today() > self.deadline
     #기간 체크
     def date_overlap(self):
         return self.deadline < date.today()
 
+    #인원 체크
     def count_overlap(self):
         return  self.user_count >= self.user_max_count
 

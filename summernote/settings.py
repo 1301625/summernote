@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'content',
     'django_summernote',
     'account',
+    'apply',
     'phone_field',
 ]
 

@@ -45,7 +45,7 @@ class user(AbstractBaseUser):
         blank=True,
         unique=True,
         validators=[
-            validators.RegexValidator(r'^[\wㄱ-힣]+$', '공백없이 입력하세요', 'invalid')
+            validators.RegexValidator(r'^[\w가-힣]+$', '공백없이 입력하세요', 'invalid')
         ]
 
     )
@@ -53,7 +53,7 @@ class user(AbstractBaseUser):
         help_text='name',
         max_length=10,
         validators=[
-            validators.RegexValidator(r'^[ㄱ-힣]+$', "공백없이 한글 이름만 입력하세요", 'invalid')
+            validators.RegexValidator(r'^[가-힣]+$', "공백없이 한글 이름만 입력하세요", 'invalid')
         ]
     )
     phone = PhoneField(unique=True,help_text='Contact phone number')

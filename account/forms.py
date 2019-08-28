@@ -1,7 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from .models import user
+
 
 from phone_field import forms as Phone
 
@@ -49,13 +52,7 @@ class signupform(forms.ModelForm):
         model = user
         fields = ['email', 'name', 'nickname', 'phone']
 
-    def clean_name(self):
-        name = self.cleaned_data["name"]
-        try:
-            user._default_manager.get(name=name)
-        except user.DoesNotExist:
-            return name
-        raise forms.ValidationError(" A user with that username already exists")
+    # 모델에 validator를 적용시키면 폼에서 적용시킬필요가없다
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

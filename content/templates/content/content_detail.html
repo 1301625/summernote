@@ -40,11 +40,15 @@
     <form action="" method="post">
     {% csrf_token %}
     <button name="choice" value="{{ object.id }}" class="btn btn-outline-dark">신청</button>
-
+    <a href="{% url 'apply' pk=object.pk %}">신청1</a>
 {% elif object.date_overlap or object.count_overlap %}
     <button name="choice" value="{{ object.id }}" class="btn btn-outline-dark" disabled>신청</button>
 {% endif %}
     <a href="{% url 'list' %}" class="btn btn-outline-dark">목록</a>
+
+{% if object.author == request.user %}
+    <a href="{% url 'apply_list' pk=object.pk %}">신청자 목록</a>
+{% endif %}
 </form>
 </body>
 </html>

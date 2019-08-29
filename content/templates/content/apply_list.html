@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for apl in apply_list %}
+    <p>{{ apl.user.name }} | {{ apl.user.phone }}</p>
+
+{% endfor %}
+
+</body>
+</html>

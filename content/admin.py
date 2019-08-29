@@ -10,4 +10,4 @@ from django_summernote.admin import SummernoteModelAdmin
 class PostAdmin(SummernoteModelAdmin):
     form = PostForm
     summernote_fields = ('content',)
-    list_display = ['title', 'content', 'user_count', 'user_max_count', 'deadline']
+    list_display = ['title', 'content', 'user_count', 'user_max_count', 'deadline','author']

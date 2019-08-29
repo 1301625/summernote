@@ -32,6 +32,7 @@ class signupform(forms.ModelForm):
                                'placeholder': 'name',
                                'required':'True',
                            }))
+
     phone = Phone.PhoneFormField()
 
 
@@ -70,16 +71,19 @@ class signupform(forms.ModelForm):
 
 
 
-class LoginForm(forms.Form):
+class LoginForm(forms.ModelForm):
 
 
-    email = forms.EmailField(label="Email",required=True, max_length=255, widget=forms.TextInput(
+    email = forms.EmailField(label="Email",error_messages={
+        'invalid':"이메일이 틀렸습니다"
+    },required=True, max_length=255, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
             'placeholder': ('Email address'),
             'required': True,
             'autofocus': True,
         }
+
     ))
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={
@@ -91,4 +95,5 @@ class LoginForm(forms.Form):
     )
 
     class Meta:
+        model = user
         fields = ['email', 'password']

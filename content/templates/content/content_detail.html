@@ -49,6 +49,8 @@
 {% if object.author == request.user %}
     <a href="{% url 'apply_list' pk=object.pk %}">신청자 목록</a>
 {% endif %}
+    <button name="cancel" value="{{ object.id }}"><a href="{% url 'apply_cancel' pk=object.pk %}" >실험</a></button>
+    <button name="cancel1" value="{{ object.id }}" onclick="{% url 'apply_cancel' pk=object.pk %}">실험2</button>
 </form>
 </body>
 </html>

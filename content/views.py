@@ -79,17 +79,38 @@ def apply_post(request, pk):
         apply.post.user_count+=1
         apply.save()
     except:
-        apply = Apply(post_id=post.id, user=request.user)
-        post.user_count+=1
-        post.save()
+        apply = Apply.objects.create(post_id=post.id, user=request.user)
+        #post.user_count+=1
+        apply.objects.model.post.user_count+=1
+        print(apply)
+        #post.save()
         apply.save()
 
-    return redirect('list')
+    return redirect('detail', pk=pk)
 
+@login_required
+def apply_cancel(request,pk):
 
+    try:
+        apply = Apply.objects.filter(post_id=pk, user=request.user)
+        print(apply.post_set.all())
+        if apply:
+            apply.delete()
+            apply.post.user_count-=1
+            messages.success(request,"신청이 취소 되었습니다.")
+        else:
+            messages.error(request, "신청자가 존재 하지 않습니다")
+    except:
+        pass
+    return redirect('detail', pk=pk)
 
 def apply_list(request, pk):
     post = get_object_or_404(Post,pk=pk)
     list = Apply.objects.filter(post_id=post.id)
 
     return render(request, 'content/apply_list.html' ,{'apply_list':list})
+
+
+
+def apply_status(request):
+    pass

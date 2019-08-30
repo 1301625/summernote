@@ -27,6 +27,7 @@ class Post(models.Model):
 
     deadline = models.DateField(validators=[date_check])
 
+    users = models.ManyToManyField(user, related_name='post_users')
 
     def __str__(self):
         return self.title

@@ -14,7 +14,7 @@
 {% endif %}
 
 {% for apl in apply_list %}
-    <p>{{ apl.user.name }} | {{ apl.user.phone }}</p>
+    <p>{{ apl.user.name }} | {{ apl.user.phone }} {{ apl.post.title }}</p>
 
 {% endfor %}
 

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from datetime import date,timedelta
 from account.models import user
 
+
 def date_check(value):
     if date.today() > value:
             raise ValidationError("지난 날짜는 선택할수 없습니다")
@@ -41,6 +42,12 @@ class Post(models.Model):
     #인원 체크
     def count_overlap(self):
         return  self.user_count >= self.user_max_count
+
+    def user_count_plus(self):
+        return self.user_count+1
+
+    def user_count_minus(self):
+        return self.user_count-1
 
 
     # def count_overlap(self):

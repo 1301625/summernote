@@ -23,6 +23,9 @@ class PostListView(ListView):
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    #content = { 'object': get_object_or_404(Post,pk=pk),
+     #           'apply': Apply.objects.filter(post_id=pk)}
+    #print(Apply.objects.filter(post_id=pk))
 
     # select = request.POST.get('choice')
     # select = request.POST.get('choice')
@@ -40,7 +43,7 @@ def post_detail(request, pk):
     # apply = Apply(post_id=select, user_id=request.user)
     # apply.save()
 
-    return render(request, 'content/content_detail.html', {'object': post})
+    return render(request, 'content/content_detail.html', {'object':post})
 
     # try:
     #     count = post.objects.get(pk=request.POST.get('choice'))
@@ -72,20 +75,32 @@ class PostCreateView(CreateView):
 
 @login_required
 def apply_post(request, pk):
-    # post= get_object_or_404(Post,pk=pk)
 
-    try:
-        apply = Apply.objects.get(post_id=pk, user=request.user)
-        apply.post.user_count += 1
-        apply.save()
-    except:
-        apply = Apply.objects.create(post_id=pk, user=request.user)
-        # post.user_count+=1
-        apply.objects.model.post.user_count += 1
-        print(apply)
-        # post.save()
-        apply.save()
+    # try:
+    #     apply = Apply.objects.get(post_id=pk, user=request.user)
+    #     apply.post.user_count += 1
+    #     apply.save()
+    # except:
+    #     apply = Apply.objects.create(post_id=pk, user=request.user)
+    #     # post.user_count+=1
+    #     apply.objects.model.post.user_count += 1
+    #     print(apply)
+    #     # post.save()
+    #     apply.save()
 
+
+
+    apply = Apply(post_id=pk, user=request.user)
+
+    #if request.user != apply.post.author:
+     #   print("다릅니다")
+
+        #apply.post.user_count = apply.user.count()
+
+
+
+    #else:
+    #    print("같습ㄴ디ㅏ")
     return redirect('detail', pk=pk)
 
 
@@ -106,7 +121,8 @@ def apply_cancel(request, pk):
 
 
 def apply_list(request, pk):
-    list = Apply.objects.filter(post_id=pk)
+    list = Apply.objects.select_related().filter(post_id=pk)
+
     if list:
         return render(request, 'content/apply_list.html', {'apply_list': list})
     # list = Apply.objects.get(post_id=pk) #get은 하나만 가져올떄 , 하나 이상 가져오면 오류

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Post
 from .forms import PostForm
-from apply.models import Apply
+
 
 from datetime import date
 
@@ -63,8 +63,11 @@ class PostCreateView(CreateView):
     # fields = ['title', 'content']
     success_url = reverse_lazy('list')
     success_message = "등록되었습니다."
-    # def form_valid(self, form):
-    #     post = form.save(commit=False)
+    def form_valid(self, form):
+         post = form.save(commit=False)
+         post.author = self.request.user
+         post.save()
+         return redirect('list')
     #     from datetime import date
     #     if date.today() < post.deadline:
     #         post.save()
@@ -90,7 +93,6 @@ def apply_post(request, pk):
 
 
 
-    apply = Apply(post_id=pk, user=request.user)
 
     #if request.user != apply.post.author:
      #   print("다릅니다")
@@ -104,31 +106,31 @@ def apply_post(request, pk):
     return redirect('detail', pk=pk)
 
 
-@login_required
-def apply_cancel(request, pk):
-    try:
-        apply = Apply.objects.filter(post_id=pk, user=request.user)
-        print(apply.post_set.all())
-        if apply:
-            apply.delete()
-            apply.post.user_count -= 1
-            messages.success(request, "신청이 취소 되었습니다.")
-        else:
-            messages.error(request, "신청자가 존재 하지 않습니다")
-    except:
-        pass
-    return redirect('detail', pk=pk)
-
-
-def apply_list(request, pk):
-    list = Apply.objects.select_related().filter(post_id=pk)
-
-    if list:
-        return render(request, 'content/apply_list.html', {'apply_list': list})
-    # list = Apply.objects.get(post_id=pk) #get은 하나만 가져올떄 , 하나 이상 가져오면 오류
-    else:
-        messages.error(request, "존재하지 않습니다")
-        return redirect('list')
+# @login_required
+# def apply_cancel(request, pk):
+#     try:
+#         apply = Apply.objects.filter(post_id=pk, user=request.user)
+#         print(apply.post_set.all())
+#         if apply:
+#             apply.delete()
+#             apply.post.user_count -= 1
+#             messages.success(request, "신청이 취소 되었습니다.")
+#         else:
+#             messages.error(request, "신청자가 존재 하지 않습니다")
+#     except:
+#         pass
+#     return redirect('detail', pk=pk)
+#
+#
+# def apply_list(request, pk):
+#     list = Apply.objects.select_related().filter(post_id=pk)
+#
+#     if list:
+#         return render(request, 'content/apply_list.html', {'apply_list': list})
+#     # list = Apply.objects.get(post_id=pk) #get은 하나만 가져올떄 , 하나 이상 가져오면 오류
+#     else:
+#         messages.error(request, "존재하지 않습니다")
+#         return redirect('list')
 
 
 def apply_status(request):

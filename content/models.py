@@ -28,7 +28,7 @@ class Post(models.Model):
 
     deadline = models.DateField(validators=[date_check])
 
-    users = models.ManyToManyField(user, related_name='post_users')
+    users = models.ManyToManyField(user, related_name='post_users',through='Apply')
 
     def __str__(self):
         return self.title
@@ -53,3 +53,14 @@ class Post(models.Model):
     # def count_overlap(self):
     #     if self.user_count < self.user_max_count:
     #         return ValueError("넘지 못함")
+
+#
+class Apply(models.Model):
+    user = models.ForeignKey(user ,on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    date_joined = models.DateTimeField(auto_now=True)
+
+
+
+    def __str__(self):
+        return '{}  {}'.format(self.user,self.post)

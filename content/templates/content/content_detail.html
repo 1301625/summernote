@@ -28,7 +28,7 @@
 <!--오브젝트-->
 <p>{{ object.title }}</p>
 <p>{{ object.content |safe }}</p>
-{% if object.user_count < object.user_max_count %}
+{% if object.total_user < object.user_max_count %}
     <p>{{ object.total_user }}</p>
     <p>{{ object.user_max_count }}
 {% elif object.date_overlap or object.count_overlap %}
@@ -36,22 +36,33 @@
 {% endif %}
 
 <!--버튼-->
-{% if object.user_count < object.user_max_count %}
+<!--신청버튼-->
+{% if object.total_user <= object.user_max_count and object.author != request.user %}
     <form action="" method="post">
     {% csrf_token %}
-    <a href="{% url 'apply' pk=object.pk%}">신청1</a>
-    <button name="choice" value="{{ object.id }}" class="btn btn-outline-dark">신청</button>
 
-{% elif object.date_overlap or object.count_overlap %}
-    <button name="choice" value="{{ object.id }}" class="btn btn-outline-dark" disabled>신청</button>
+    <!---신청자 유무 체크 ---->
+    {% if apply %}
+        <a href="{% url 'apply_cancel' pk=object.pk %}" class="btn btn-outline-dark">신청 취소</a>
+        {% else %}
+
+        <!---인원 및 기간 체크 --->
+        {% if object.date_overlap or object.count_overlap %}
+            <a href="" class="btn btn-outline-dark disabled">신청</a>
+            {% else %}
+            <a href="{% url 'apply' pk=object.pk%}" class="btn btn-outline-dark">신청</a>
+        {% endif %}
+
+
+    {% endif %}
+
+
 {% endif %}
-    <a href="{% url 'list' %}" class="btn btn-outline-dark">목록</a>
 
 {% if object.author == request.user %}
-    <a href="{% url 'apply_list' pk=object.pk %}">신청자 목록</a>
+    <a href="{% url 'apply_list' pk=object.pk %}" class="btn btn-outline-dark">신청자 목록</a>
 {% endif %}
-    <a href="{% url 'apply_cancel' pk=object.pk %}" >신청 취소</a>
-    <button name="cancel1" value="{{ object.id }}" onclick="{% url 'apply_cancel' pk=object.pk %}">실험2</button>
+<a href="{% url 'list' %}" class="btn btn-outline-dark">목록</a>
 </form>
 </body>
 </html>

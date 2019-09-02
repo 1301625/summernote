@@ -24,6 +24,11 @@ class PostListView(ListView):
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    apply = Apply.objects.select_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
+    content = {
+        'object': post,
+        'apply':  apply
+    }
     # content = { 'object': get_object_or_404(Post,pk=pk),
     #           'apply': Apply.objects.filter(post_id=pk)}
     # print(Apply.objects.filter(post_id=pk))
@@ -44,7 +49,7 @@ def post_detail(request, pk):
     # apply = Apply(post_id=select, user_id=request.user)
     # apply.save()
 
-    return render(request, 'content/content_detail.html', {'object': post})
+    return render(request, 'content/content_detail.html', content)
 
     # try:
     #     count = post.objects.get(pk=request.POST.get('choice'))
@@ -128,6 +133,7 @@ def apply_cancel(request, pk):
         messages.success(request, "취소 되었습니다")
     else:
         messages.error(request, "신청 하지 않았습니다")
+    return redirect('detail', pk=pk)
     #불가능
     # post = Post.objects.get(pk=pk)
     #
@@ -164,7 +170,6 @@ def apply_cancel(request, pk):
     #         messages.error(request, "신청자가 존재 하지 않습니다")
     # except:
     #     pass
-    return redirect('detail', pk=pk)
 
 
 def apply_list(request, pk):
@@ -176,7 +181,7 @@ def apply_list(request, pk):
     # list = Apply.objects.get(post_id=pk) #get은 하나만 가져올떄 , 하나 이상 가져오면 오류
     else:
         messages.error(request, "존재하지 않습니다")
-        return redirect('list')
+        return redirect('detail' ,pk=pk)
 
 
 def apply_status(request):

@@ -12,7 +12,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'content','user_count', 'user_max_count','deadline']
+        fields = ['title', 'content','user_max_count','deadline']
 
         widgets = {
             'content' : SummernoteWidget(attrs={'summernote': {'width': '700px', 'height':'700px'}}),

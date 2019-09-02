@@ -19,7 +19,7 @@ class Post(models.Model):
     content = models.TextField()
 
     user_max_count = models.PositiveIntegerField(default=0)
-    user_count = models.PositiveIntegerField(default=0)
+    user_count = models.PositiveIntegerField(default=0)     #삭제
 
     is_active = models.BooleanField(default=True)
 
@@ -41,20 +41,17 @@ class Post(models.Model):
 
     #인원 체크
     def count_overlap(self):
-        return  self.user_count >= self.user_max_count
-
-
-    #유저 증가
-    def user_count_plus(self):
-        return self.user_count+1
-
-    #유저 감소
-    def user_count_minus(self):
-        return self.user_count-1
+        return  self.total_user() >= self.user_max_count
 
     #유저수 체크
     def total_user(self):
         return self.users.count()
+
+
+    #
+    # def user_apply_check(self,pk):
+    #     apply_user = Apply.objects.get(post_id=pk)
+    #     if apply_user.objects.filter(user_id=self.request.user.id):
 
 
     # def count_overlap(self):
@@ -67,7 +64,5 @@ class Apply(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE)
     date_joined = models.DateTimeField(auto_now=True)
 
-
-
     def __str__(self):
-        return '{}  {}'.format(self.user,self.post)
+        return "%s %s" %(self.user, self.post)

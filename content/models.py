@@ -43,11 +43,18 @@ class Post(models.Model):
     def count_overlap(self):
         return  self.user_count >= self.user_max_count
 
+
+    #유저 증가
     def user_count_plus(self):
         return self.user_count+1
 
+    #유저 감소
     def user_count_minus(self):
         return self.user_count-1
+
+    #유저수 체크
+    def total_user(self):
+        return self.users.count()
 
 
     # def count_overlap(self):

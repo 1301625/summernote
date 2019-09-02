@@ -29,7 +29,7 @@
 <p>{{ object.title }}</p>
 <p>{{ object.content |safe }}</p>
 {% if object.user_count < object.user_max_count %}
-    <p>{{ object.user_count }}</p>
+    <p>{{ object.total_user }}</p>
     <p>{{ object.user_max_count }}
 {% elif object.date_overlap or object.count_overlap %}
     <p>참여 마감</p>
@@ -39,8 +39,9 @@
 {% if object.user_count < object.user_max_count %}
     <form action="" method="post">
     {% csrf_token %}
+    <a href="{% url 'apply' pk=object.pk%}">신청1</a>
     <button name="choice" value="{{ object.id }}" class="btn btn-outline-dark">신청</button>
-    <a href="{% url 'apply' pk=object.pk %}">신청1</a>
+
 {% elif object.date_overlap or object.count_overlap %}
     <button name="choice" value="{{ object.id }}" class="btn btn-outline-dark" disabled>신청</button>
 {% endif %}
@@ -49,7 +50,7 @@
 {% if object.author == request.user %}
     <a href="{% url 'apply_list' pk=object.pk %}">신청자 목록</a>
 {% endif %}
-    <button name="cancel" value="{{ object.id }}"><a href="{% url 'apply_cancel' pk=object.pk %}" >실험</a></button>
+    <a href="{% url 'apply_cancel' pk=object.pk %}" >신청 취소</a>
     <button name="cancel1" value="{{ object.id }}" onclick="{% url 'apply_cancel' pk=object.pk %}">실험2</button>
 </form>
 </body>

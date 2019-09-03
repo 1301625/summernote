@@ -15,6 +15,7 @@ from datetime import date
 class PostListView(ListView):
     model = Post
     template_name = 'content/content_list.html'
+    queryset = Post.objects.prefetch_related('users','author').all() # 쿼리 최적화
 
 
 # class PostDetialView(DetailView):
@@ -23,8 +24,15 @@ class PostListView(ListView):
 
 
 def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    apply = Apply.objects.select_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
+    post = Post.objects.prefetch_related('users').get(pk=pk)                            #해당 Post디비를 가져옴
+
+    #apply = post.users.filter(post__apply__user_id=request.user.id, apply__post_id=pk)
+    apply = post.apply_set.select_related('user').filter(user_id=request.user.id)       #유저가 디비에 있는지 확인
+
+    print(apply)
+    #print(post2)
+
+    #apply = Apply.objects.prefetch_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
     content = {
         'object': post,
         'apply':  apply
@@ -129,7 +137,7 @@ def apply_cancel(request, pk):
     apply = Apply.objects.filter(post_id=pk)
 
     if apply.filter(user_id=request.user).exists():
-        apply.filter(user_id=request.user).delete()
+        apply.get(user_id=request.user).delete()
         messages.success(request, "취소 되었습니다")
     else:
         messages.error(request, "신청 하지 않았습니다")

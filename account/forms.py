@@ -71,24 +71,22 @@ class signupform(forms.ModelForm):
 
 
 
-class LoginForm(forms.ModelForm):
+class LoginForm(forms.Form):
 
 
-    email = forms.EmailField(label="Email",error_messages={
-        'invalid':"이메일이 틀렸습니다"
-    },required=True, max_length=255, widget=forms.TextInput(
+    email = forms.EmailField(label="Email",required=True, max_length=255, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
-            'placeholder': ('Email address'),
+            'placeholder': ('이메일'),
             'required': True,
             'autofocus': True,
         }
 
     ))
-    password = forms.CharField(widget=forms.PasswordInput(
+    password = forms.CharField(label="Password",widget=forms.PasswordInput(
         attrs={
             'class': 'form-control',
-            'placeholder': 'Password',
+            'placeholder': '패스워드',
             'required': True,
         }
     )

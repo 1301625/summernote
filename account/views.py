@@ -22,15 +22,20 @@ def signup(request):
 def log_in(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+
         email = request.POST['email']
         password = request.POST['password']
         user = authenticate(email=email, password=password)
         if user is not None:
-            login(request,user)
+            login(request, user)
             return redirect('list')
+        else:
+            form.add_error(None, "아이디 또는 비밀번호가 올바르지 않습니다")
+
     else:
         form = LoginForm()
     return render(request, 'account/login.html', {'form': form})
+
 
 def log_out(request):
     logout(request)

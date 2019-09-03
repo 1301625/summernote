@@ -15,7 +15,7 @@ from datetime import date
 class PostListView(ListView):
     model = Post
     template_name = 'content/content_list.html'
-    queryset = Post.objects.prefetch_related('users','author').all() # 쿼리 최적화
+    queryset = Post.objects.prefetch_related('users', 'author').all()  # 쿼리 최적화
 
 
 # class PostDetialView(DetailView):
@@ -24,19 +24,18 @@ class PostListView(ListView):
 
 
 def post_detail(request, pk):
-    post = Post.objects.prefetch_related('users').get(pk=pk)                            #해당 Post디비를 가져옴
+    post = Post.objects.prefetch_related('users').get(pk=pk)  # 해당 Post디비를 가져옴
 
-    #apply = post.users.filter(post__apply__user_id=request.user.id, apply__post_id=pk)
-    apply = post.apply_set.select_related('user').filter(user_id=request.user.id)       #유저가 디비에 있는지 확인
+    # apply = post.users.filter(post__apply__user_id=request.user.id, apply__post_id=pk)
+    apply = post.apply_set.select_related('user').filter(user_id=request.user.id)  # 유저가 디비에 있는지 확인
+    # print(post2)
 
-    print(apply)
-    #print(post2)
-
-    #apply = Apply.objects.prefetch_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
+    # apply = Apply.objects.prefetch_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
     content = {
         'object': post,
-        'apply':  apply
+        'apply': apply
     }
+    return render(request, 'content/content_detail.html', content)
     # content = { 'object': get_object_or_404(Post,pk=pk),
     #           'apply': Apply.objects.filter(post_id=pk)}
     # print(Apply.objects.filter(post_id=pk))
@@ -57,7 +56,7 @@ def post_detail(request, pk):
     # apply = Apply(post_id=select, user_id=request.user)
     # apply.save()
 
-    return render(request, 'content/content_detail.html', content)
+
 
     # try:
     #     count = post.objects.get(pk=request.POST.get('choice'))
@@ -98,11 +97,11 @@ def apply_post(request, pk):
         messages.error(request, "이미 신청 되었습니다")
         return redirect('detail', pk=pk)
     else:
-        post.apply_set.create(user_id=request.user.id,post_id=pk)
-        #apply = Apply(user=request.user, post_id=pk)
+        post.apply_set.create(user_id=request.user.id, post_id=pk)
+        # apply = Apply(user=request.user, post_id=pk)
 
         messages.success(request, "신청 되었습니다")
-        #apply.save()
+        # apply.save()
         return redirect('detail', pk)
     # ap = Apply.objects.filter(post_id=pk).count()
     # post = get_object_or_404(Post,pk=pk)
@@ -142,15 +141,15 @@ def apply_cancel(request, pk):
     else:
         messages.error(request, "신청 하지 않았습니다")
     return redirect('detail', pk=pk)
-    #불가능
+    # 불가능
     # post = Post.objects.get(pk=pk)
     #
     # if post.users.filter(id=request.user.id).exists():
     #     post.apply_set.clear(user_id=request.user.id, post_id=pk)
     #     post.save()
-        #post.apply_set.remove(id=request.user.id ,)
-        #post.users.filter(post__apply__user_id=request.user).delete() 유저 자체를 지움
-        #post.save()
+    # post.apply_set.remove(id=request.user.id ,)
+    # post.users.filter(post__apply__user_id=request.user).delete() 유저 자체를 지움
+    # post.save()
     # 나중에 방법
     # apply = Apply.objects.filter(post_id=pk, user_id=request.user.id)
     # if apply:
@@ -158,9 +157,9 @@ def apply_cancel(request, pk):
     #     apply.delete()
     # else:
 
-    #print(post)
+    # print(post)
 
-    #if apply.objects.filter(user_id=request.user.id).exists():
+    # if apply.objects.filter(user_id=request.user.id).exists():
     #    print("존재")
     # if post.users.filter(id=request.user.id):
     #    post.user_count_minus()
@@ -189,7 +188,7 @@ def apply_list(request, pk):
     # list = Apply.objects.get(post_id=pk) #get은 하나만 가져올떄 , 하나 이상 가져오면 오류
     else:
         messages.error(request, "존재하지 않습니다")
-        return redirect('detail' ,pk=pk)
+        return redirect('detail', pk=pk)
 
 
 def apply_status(request):

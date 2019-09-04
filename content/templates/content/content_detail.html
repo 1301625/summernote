@@ -1,28 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_body %}
+{% endblock %}
+
+{% block content %}
 <!---메세지-->
 {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
-    {% endfor %}
-</ul>
+    <ul class="messages">
+        {% for message in messages %}
+            <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+        {% endfor %}
+    </ul>
 {% endif %}
 
 <!--오브젝트-->
@@ -31,26 +20,24 @@
 {% if object.total_user < object.user_max_count %}
     <p>{{ object.total_user }}</p>
     <p>{{ object.user_max_count }}
-{% elif object.date_overlap or object.count_overlap %}
+        {% elif object.date_overlap or object.count_overlap %}
     <p>참여 마감</p>
 {% endif %}
 
 <!--버튼-->
 <!--신청버튼-->
-{% if object.total_user <= object.user_max_count and object.author != request.user %}
-    <form action="" method="post">
-    {% csrf_token %}
+{% if object.author != request.user %}
 
     <!---신청자 유무 체크 ---->
     {% if apply %}
         <a href="{% url 'apply_cancel' pk=object.pk %}" class="btn btn-outline-dark">신청 취소</a>
-        {% else %}
+    {% else %}
 
         <!---인원 및 기간 체크 --->
         {% if object.date_overlap or object.count_overlap %}
             <a href="" class="btn btn-outline-dark disabled">신청</a>
-            {% else %}
-            <a href="{% url 'apply' pk=object.pk%}" class="btn btn-outline-dark">신청</a>
+        {% else %}
+            <a href="{% url 'apply' pk=object.pk %}" class="btn btn-outline-dark">신청</a>
         {% endif %}
 
 
@@ -61,8 +48,14 @@
 
 {% if object.author == request.user %}
     <a href="{% url 'apply_list' pk=object.pk %}" class="btn btn-outline-dark">신청자 목록</a>
+    <a href="{% url 'edit' pk=object.pk %}">수정</a>
+{#    <a href="{% url 'delete' pk=object.pk %}" class="ajax-post-confirm"#}
+{#       data-target-id="{{ object.pk }}"#}
+{#       data-message="정말 삭제하시겠습니까?">삭제</a>#}
+    <a href="{% url 'delete' pk=object.pk %}" onclick="return confirm('삭제하겠습니까?');">삭제</a>
+
 {% endif %}
 <a href="{% url 'list' %}" class="btn btn-outline-dark">목록</a>
-</form>
-</body>
-</html>
+
+
+{% endblock %}

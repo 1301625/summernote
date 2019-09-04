@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView ,UpdateView,DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
 
@@ -88,6 +88,30 @@ class PostCreateView(CreateView):
     #         return redirect('list')
     #     else:
     #         messages.error(self.request,"날짜를 다시 선택해 주세요")
+
+class PostUpdateView(UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'content/content_create.html'
+
+    #해당 사용자 검증
+    def get_queryset(self):
+        qs= self.request.user
+        return self.model.objects.filter(author=qs)
+
+class PostDeleteView(DeleteView):
+    model = Post
+    success_url = '/'
+    success_messages = "삭제되었습니다"
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = self.request.user
+        return self.model.objects.filter(author=qs)
+
+
 
 
 @login_required
@@ -189,7 +213,3 @@ def apply_list(request, pk):
     else:
         messages.error(request, "존재하지 않습니다")
         return redirect('detail', pk=pk)
-
-
-def apply_status(request):
-    pass

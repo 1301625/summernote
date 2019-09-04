@@ -39,6 +39,11 @@ class user(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+    '''
+        닉네임을 공백으로 하려면
+        null=True 추가하고 unique 제거 , 또는 blank 제거,
+        닉네임을 blank 비워두고 싶지만 나중에 더 좋은방법을 생각할것 
+    '''
     nickname = models.CharField(
         help_text='nickname',
         max_length=10,

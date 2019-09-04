@@ -1,7 +1,6 @@
 from django.db import models
-
-from django import forms
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 from datetime import date,timedelta
 from account.models import user
@@ -46,6 +45,9 @@ class Post(models.Model):
     #유저수 체크
     def total_user(self):
         return self.users.count()
+
+    def get_absolute_url(self):
+        return reverse('detail', args=[self.id])
 
 
     #

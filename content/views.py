@@ -6,6 +6,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required  # 로그인 필요
 from django.views.decorators.http import require_POST  # post 요청만 허용
 
+import json
+from django.http import JsonResponse,HttpResponse
+
+
 from .models import Post, Apply
 from .forms import PostForm
 
@@ -24,10 +28,10 @@ class PostListView(ListView):
 
 
 def post_detail(request, pk):
-    post = Post.objects.prefetch_related('users').get(pk=pk)  # 해당 Post디비를 가져옴
+    post = Post.objects.prefetch_related('users','author').get(pk=pk)  # 해당 Post디비를 가져옴
 
     # apply = post.users.filter(post__apply__user_id=request.user.id, apply__post_id=pk)
-    apply = post.apply_set.select_related('user').filter(user_id=request.user.id)  # 유저가 디비에 있는지 확인
+    apply = post.apply_set.filter(user_id=request.user.id)  # 유저가 디비에 있는지 확인
     # print(post2)
 
     # apply = Apply.objects.prefetch_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
@@ -115,19 +119,26 @@ class PostDeleteView(DeleteView):
 
 
 @login_required
-def apply_post(request, pk):
-    post = Post.objects.get(pk=pk)
+@require_POST
+def apply_post(request,pk):
+    #pk = request.POST.get('pk', None)
+    #print("pk:", pk)
+    post = get_object_or_404(Post, pk=pk)
     if post.users.filter(id=request.user.id).exists():
-        messages.error(request, "이미 신청 되었습니다")
-        return redirect('detail', pk=pk)
+        messages="이미 신청 되었습니다"
+        #return redirect('detail', pk=pk)
     else:
         post.apply_set.create(user_id=request.user.id, post_id=pk)
         # apply = Apply(user=request.user, post_id=pk)
+        messages="신청 되었습니다"
 
-        messages.success(request, "신청 되었습니다")
-        # apply.save()
-        return redirect('detail', pk)
-    # ap = Apply.objects.filter(post_id=pk).count()
+    data = {
+        'total_user': post.total_user(),
+        'message' : messages,
+    }
+    print(data)
+    return HttpResponse(json.dumps(data) ,content_type='application/json')
+        # ap = Apply.objects.filter(post_id=pk).count()
     # post = get_object_or_404(Post,pk=pk)
     # post.user_count = ap
     # print(post.user_count)

@@ -28,13 +28,13 @@
             $.ajax({
                 url : '{% url 'apply' pk=object.pk %}',
                 type : "POST",
-                data :  {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                data :  {'csrfmiddlewaretoken': '{{ csrf_token }}'},
 
             })
             .done(function(response){
                 alert(response.message);
                 $(".total-user").html('<p class="total-user">'+response.total_user+"</p>");
-                $(".apply").replaceWith("<a href=\"{% url 'apply_cancel' pk=object.pk %}\" class=\"btn btn-outline-dark\">신청 취소</a>")
+                $(".apply").replaceWith("<input type=\"button\" class=\"apply_cancel btn btn-outline-dark\" value=\"신청취소\">")
             }).fail(function(xhr,status,errorThrow){
                    $("#text").html("오류가 발생했습니다.<br>")
                     .append("오류명: " + errorThrown + "<br>")
@@ -44,6 +44,22 @@
                 alert('로그인이 필요합니다');
                 window.location.href="account/login";
             {% endif %}
+        });
+        $(document).on('click', '.apply_cancel' ,function(){
+            $.ajax({
+                url : '{% url 'apply_cancel' pk=object.pk %}',
+                type: "POST",
+                data : {"csrfmiddlewaretoken": '{{ csrf_token }}'},
+            })
+                .done(function(response){
+                    alert(response.message);
+                    $(".total-user").html('<p class="total-user">'+response.total_user+"</p>")
+                    $(".apply_cancel").replaceWith("<input type=\"button\" class=\"apply btn btn-outline-dark\" value=\"신청\">")
+                }).fail(function(xhr,status,errorThrow){
+                   $("#text").html("오류가 발생했습니다.<br>")
+                    .append("오류명: " + errorThrown + "<br>")
+                    .append("상태: " + status);
+            });
         });
     </script>
 {% endblock %}
@@ -74,17 +90,18 @@
 
     <!---신청자 유무 체크 ---->
     {% if apply %}
-        <a href="{% url 'apply_cancel' pk=object.pk %}" class="btn btn-outline-dark">신청 취소</a>
+       <!-- <a href="{% url 'apply_cancel' pk=object.pk %}" class="btn btn-outline-dark">신청 취소</a> -->
+        <input type="button" class="apply_cancel btn btn-outline-dark" value="신청취소">
     {% else %}
 
         <!---인원 및 기간 체크 --->
         {% if object.date_overlap or object.count_overlap %}
             <a href="" class="apply_disabled btn btn-outline-dark disabled">신청</a>
         {% else %}
-            <a href="{#% url 'apply' %#}" class="btn btn-outline-dark"
+           <!--- <a href="{#% url 'apply' %#}" class="btn btn-outline-dark"
             data-target-id="{{ object.pk }}"
-            data-message="신청하겠습니까?">신청</a>
-            <input type="button" class="apply btn btn-outline-dark" name="{{ object.pk }}" value="신청">
+            data-message="신청하겠습니까?">신청</a> -->
+            <input type="button" class="apply btn btn-outline-dark" value="신청">
         {% endif %}
 
 

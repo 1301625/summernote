@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required  # 로그인 필요
 from django.views.decorators.http import require_POST  # post 요청만 허용
 
 import json
-from django.http import JsonResponse,HttpResponse
+from django.http import HttpResponse
 
 
 from .models import Post, Apply
@@ -136,7 +136,6 @@ def apply_post(request,pk):
         'total_user': post.total_user(),
         'message' : messages,
     }
-    print(data)
     return HttpResponse(json.dumps(data) ,content_type='application/json')
         # ap = Apply.objects.filter(post_id=pk).count()
     # post = get_object_or_404(Post,pk=pk)
@@ -172,10 +171,16 @@ def apply_cancel(request, pk):
 
     if apply.filter(user_id=request.user).exists():
         apply.get(user_id=request.user).delete()
-        messages.success(request, "취소 되었습니다")
+        message = "취소 되었습니다"
     else:
-        messages.error(request, "신청 하지 않았습니다")
-    return redirect('detail', pk=pk)
+        message= "신청 하지 않았습니다"
+
+    data = {
+        'total_user' : apply.count(),
+        'message' : message
+    }
+    return HttpResponse(json.dumps(data), content_type='application/json')
+    #return redirect('detail', pk=pk)
     # 불가능
     # post = Post.objects.get(pk=pk)
     #

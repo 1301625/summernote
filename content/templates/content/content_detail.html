@@ -3,27 +3,48 @@
 
 {% block extra_body %}
     <script>
-        $(".apply").click(function () {
-
-            var pk = $(this).attr('href');
-            console.log(pk);
-            var target_id = $(this).data('target-id');
-            var pk1 = $(this).attr('id');
-            console.log(pk ,target_id, pk1);
+        $(document).on('click', '.apply', function(){
+            {% if request.user.is_active %}
+            {#$.ajax({#}
+            {#    type : "POST",#}
+            {#    url : '{% url 'apply' pk=object.pk %}',#}
+            {#    data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},#}
+            {#    success : function(response){#}
+            {#        alert(response.message);#}
+            {#        //$('.message').replaceWith('<p class="message">'+response.message+'</p>');#}
+            {#        $(".total-user").html('<p class="total-user">'+response.total_user+"</p>");#}
+            {#        $(".apply").html('<input type="button value="신청취소">');#}
+            {#    },#}
+            {#    fail : function(request, status,error){#}
+            {##}
+            {#    },#}
+            {#    error: function(request, status,error){#}
+            {#        alert("로그인이 필요합니다.");#}
+            {#        window.location.replace("/account/login/");#}
+            {#        //alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);#}
+            {##}
+            {#    },#}
+            //});
             $.ajax({
-                type : "POST",
                 url : '{% url 'apply' pk=object.pk %}',
-                data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-                success : function(response){
-                    $('.message').replaceWith('<p class="message">'+response.message+'</p>');
-                    $(".total-user").html('<p class="total-user">'+response.total_user+"</p>");
-                },
-                error: function(request, status,error){
-                    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                type : "POST",
+                data :  {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
 
-                }
             })
-        })
+            .done(function(response){
+                alert(response.message);
+                $(".total-user").html('<p class="total-user">'+response.total_user+"</p>");
+                $(".apply").replaceWith("<a href=\"{% url 'apply_cancel' pk=object.pk %}\" class=\"btn btn-outline-dark\">신청 취소</a>")
+            }).fail(function(xhr,status,errorThrow){
+                   $("#text").html("오류가 발생했습니다.<br>")
+                    .append("오류명: " + errorThrown + "<br>")
+                    .append("상태: " + status);
+            });
+                {% else %}
+                alert('로그인이 필요합니다');
+                window.location.href="account/login";
+            {% endif %}
+        });
     </script>
 {% endblock %}
 
@@ -36,7 +57,7 @@
         {% endfor %}
     </ul>
 {% endif %}
-
+<p id="text"></p>
 <!--오브젝트-->
 <p>{{ object.title }}</p>
 <p>{{ object.content |safe }}</p>
@@ -58,7 +79,7 @@
 
         <!---인원 및 기간 체크 --->
         {% if object.date_overlap or object.count_overlap %}
-            <a href="" class="btn btn-outline-dark disabled">신청</a>
+            <a href="" class="apply_disabled btn btn-outline-dark disabled">신청</a>
         {% else %}
             <a href="{#% url 'apply' %#}" class="btn btn-outline-dark"
             data-target-id="{{ object.pk }}"

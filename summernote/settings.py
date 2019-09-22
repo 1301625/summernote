@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 #    'apply',
     'phone_field',
     'debug_toolbar'
+
 ]
 
 MIDDLEWARE = [

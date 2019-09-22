@@ -65,6 +65,7 @@
 {% endblock %}
 
 {% block content %}
+
 <!---메세지-->
 {% if messages %}
     <ul class="messages">
@@ -77,13 +78,13 @@
 <!--오브젝트-->
 <p>{{ object.title }}</p>
 <p>{{ object.content |safe }}</p>
+
 {% if object.total_user < object.user_max_count %}
     <p class="total-user">{{ object.total_user }}</p>
     <p>{{ object.user_max_count }}
         {% elif object.date_overlap or object.count_overlap %}
     <p>참여 마감</p>
 {% endif %}
-
 <!--버튼-->
 <!--신청버튼-->
 {% if object.author != request.user %}
@@ -120,6 +121,18 @@
 
 {% endif %}
 <a href="{% url 'list' %}" class="btn btn-outline-dark">목록</a>
+
+
+    <!---댓글 목록-->
+    {% for comment in object.comment_set.all %}
+        <p>{{ comment }} <small>{{ comment.created|timesince }}전</small></p>
+    {% endfor %}
+
+    <!-- 댓글 폼 -->
+    <form action="" method="get">
+        <div class="form-group">{{ comment_form }}</div>
+    </form>
+    {{ comment_form  }}
 
 
 {% endblock %}

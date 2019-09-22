@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <!---메세지-->
 {% if messages %}
 <ul class="messages">
@@ -17,17 +18,21 @@
         <p>{{ foo.total_user }} | {{ foo.user_max_count }} 참여 </p>
         {# 현재시간 {% now "SHORT_DATE_FORMAT" %}#}
         <p>모집기간 : {{ foo.deadline }} 까지</p>
-
+        남은기간 {{ foo.deadline|timeuntil }}
     {% elif foo.date_overlap or foo.count_overlap %}
         <p>참여 마감!</p>
     {% endif %}
 
     <!---닉네임 empty 체크 -->
     {% if foo.author.nickname %}
-        {{ foo.author.nickname }}
+        <p>
+            {{ foo.author.nickname }}
+        </p>
 
     {% else %}
-        {{ foo.author.name }}
+        <p>
+            {{ foo.author.name }}
+        </p>
     {% endif %}
 
 {% endfor %}
@@ -35,6 +40,7 @@
 
 
 <hr>
+
 {% if request.user.is_authenticated %}
     <a href="{% url 'new' %}">글생성</a>
     <a href="{% url 'logout' %}">로그아웃</a>

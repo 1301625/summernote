@@ -68,3 +68,14 @@ class Apply(models.Model):
 
     def __str__(self):
         return "%s %s" %(self.user, self.post)
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(user, on_delete = models.CASCADE)
+    post = models.ForeignKey(Post, on_delete = models.CASCADE)
+    context = models.CharField(max_length=40)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.context

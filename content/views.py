@@ -11,9 +11,9 @@ from django.http import HttpResponse
 
 
 from .models import Post, Apply
-from .forms import PostForm
+from .forms import PostForm , CommentForm
 
-from datetime import date
+
 
 
 class PostListView(ListView):
@@ -21,25 +21,33 @@ class PostListView(ListView):
     template_name = 'content/content_list.html'
     queryset = Post.objects.prefetch_related('users', 'author').all()  # 쿼리 최적화
 
-
+#제네릭 디테일 뷰
 # class PostDetialView(DetailView):
 #     model = Post
 #     template_name = 'content/content_detail.html'
 
 
+#댓글 폼 테스트
+def comment_form(request):
+    form = CommentForm()
+    return render(request, 'content/comment_form.html', {'form':form})
+
 def post_detail(request, pk):
-    post = Post.objects.prefetch_related('users','author').get(pk=pk)  # 해당 Post디비를 가져옴
-
-    # apply = post.users.filter(post__apply__user_id=request.user.id, apply__post_id=pk)
+    post = Post.objects.prefetch_related('users','author','comment_set').get(pk=pk)  # 해당 Post디비를 가져옴
     apply = post.apply_set.filter(user_id=request.user.id)  # 유저가 디비에 있는지 확인
-    # print(post2)
 
-    # apply = Apply.objects.prefetch_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
+    form = CommentForm()
+    print(form)
     content = {
+        'comment_form ': form,
         'object': post,
-        'apply': apply
+        'apply': apply,
     }
     return render(request, 'content/content_detail.html', content)
+
+
+    # apply = Apply.objects.prefetch_related('user').filter(post_id=pk,user_id=request.user.id) #접속한유저가 신청 유무확인
+    # apply = post.users.filter(post__apply__user_id=request.user.id, apply__post_id=pk)
     # content = { 'object': get_object_or_404(Post,pk=pk),
     #           'apply': Apply.objects.filter(post_id=pk)}
     # print(Apply.objects.filter(post_id=pk))
@@ -180,6 +188,8 @@ def apply_cancel(request, pk):
         'message' : message
     }
     return HttpResponse(json.dumps(data), content_type='application/json')
+
+
     #return redirect('detail', pk=pk)
     # 불가능
     # post = Post.objects.get(pk=pk)

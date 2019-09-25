@@ -19,7 +19,7 @@ from .forms import PostForm , CommentForm
 class PostListView(ListView):
     model = Post
     template_name = 'content/content_list.html'
-    queryset = Post.objects.prefetch_related('users', 'author').all()  # 쿼리 최적화
+    queryset = Post.objects.prefetch_related('users', 'author').order_by('-id')  # 쿼리 최적화
 
 #제네릭 디테일 뷰
 # class PostDetialView(DetailView):
@@ -37,7 +37,7 @@ def post_detail(request, pk):
     apply = post.apply_set.filter(user_id=request.user.id)  # 유저가 디비에 있는지 확인
 
     form = CommentForm()
-    print(form)
+
     content = {
         'comment_form ': form,
         'object': post,

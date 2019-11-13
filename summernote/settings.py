@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'account',
 #    'apply',
     'phone_field',
-    'debug_toolbar'
+    'debug_toolbar',
+
+    'channels',
 
 ]
 
@@ -78,6 +80,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'summernote.wsgi.application'
+ASGI_APPLICATION = 'summernote.routing.application'
 
 
 # Database

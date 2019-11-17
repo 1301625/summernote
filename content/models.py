@@ -1,9 +1,13 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.contrib.auth import settings
+
 
 from datetime import date,timedelta
 from account.models import user
+
+
 
 
 def date_check(value):
@@ -79,3 +83,15 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.context
+
+
+
+class Chatroom(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL ,on_delete=models.CASCADE)
+
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.message

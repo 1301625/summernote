@@ -3,6 +3,7 @@ from django.views.generic import CreateView, ListView, DetailView ,UpdateView,De
 from django.urls import reverse_lazy
 from django.contrib import messages
 
+
 from django.contrib.auth.decorators import login_required  # 로그인 필요
 from django.views.decorators.http import require_POST  # post 요청만 허용
 
@@ -10,8 +11,10 @@ import json
 from django.http import HttpResponse
 
 
-from .models import Post, Apply
+from .models import Post, Apply, Chatroom
 from .forms import PostForm , CommentForm
+
+
 
 
 
@@ -239,3 +242,15 @@ def apply_list(request, pk):
     else:
         messages.error(request, "존재하지 않습니다")
         return redirect('detail', pk=pk)
+
+
+def room(request, pk):
+    chat_message = Chatroom.objects.select_related().filter(post_id=pk)
+    content = {
+        'chat_message' : chat_message,
+        'pk' : pk
+    }
+    return render(request, 'content/room.html', content)
+
+
+

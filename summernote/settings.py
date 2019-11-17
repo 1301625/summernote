@@ -31,21 +31,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'content',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'content',
+
     'django_summernote',
     'account',
 #    'apply',
     'phone_field',
     'debug_toolbar',
-
-    'channels',
-    'chat',
 
 ]
 
@@ -81,7 +80,19 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'summernote.wsgi.application'
+
+#Channels 서버로 변경
 ASGI_APPLICATION = 'summernote.routing.application'
+
+#여러채널로 가능하지만 단일 채널로 구현
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1',32769)],
+        },
+    },
+}
 
 
 # Database
@@ -137,10 +148,19 @@ STATIC_URL = '/static/'
 #   os.path.join(BASE_DIR, 'static'),
 # )
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
 
 AUTH_USER_MODEL = 'account.user'
 
 
+
 LOGIN_URL = '/account/login'
+
+#채팅방 시간
+DATETIME_FORMAT = "%H:%M"

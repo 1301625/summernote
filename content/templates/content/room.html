@@ -4,14 +4,21 @@
 
 {% block content %}
     <div class="chat-content">
-    {% if chat_message %}
-        {% for message in chat_message %}
-            <p>{{ message }} {{ message.user.name }}</p>
-        {% endfor %}
 
-    {% else %}
-        <p>없음</p>
-    {% endif %}
+
+        {% if request.user.id in users or author == request.user.id %} <!--신청한 유저 유무 체크 및 작성자 체크-->
+
+            {% if chat_message %}
+                {% for message in chat_message %}
+                    <p>{{ message }} {{ message.user.name }}</p>
+                {% endfor %}
+
+            {% else %}
+                <p> - </p>
+            {% endif %}
+            {% else %}
+            <p>스터디를 신청해주세요</p>
+        {% endif %}
     </div>
 
     <input id="room-name-input" type="text" size="100"/><br/>
@@ -24,43 +31,43 @@
     <script>
         var roomPk = '{{ pk }}';
         var ws_scheme = window.location.protocol === "https:" ? 'wss' : 'ws';
-        var websocket_str = ws_scheme + '://' + window.location.host + '/ws/'+roomPk+'/chat/';
+        var websocket_str = ws_scheme + '://' + window.location.host + '/ws/' + roomPk + '/chat/';
         var chatSocket = new ReconnectingWebSocket(websocket_str);
         //var chatSocket = new WebSocket('ws://'+ window.location.host + '/ws/'+roomPk+'/chat/');
 
-        chatSocket.onmessage = function(e) {
+        chatSocket.onmessage = function (e) {
 
-             var data = JSON.parse(e.data);
-             console.log(data);
-             var message = data['message'];
-             var receive_user = data['user'];
-             var user_name = data['user_name'];
-             {#$('<p>'+message+'</p>').appendTo(('.chat-content'));#}
-             $('.chat-content').append('<p>'+message+' '+user_name+'</p>');
-             {#$('<p>123123</p>').appendTo($('.chat-content'));#}
-         };
+            var data = JSON.parse(e.data);
+            console.log(data);
+            var message = data['message'];
+            var receive_user = data['user'];
+            var user_name = data['user_name'];
+            {#$('<p>'+message+'</p>').appendTo(('.chat-content'));#}
+            $('.chat-content').append('<p>' + message + ' ' + user_name + '</p>');
+            {#$('<p>123123</p>').appendTo($('.chat-content'));#}
+        };
 
-        chatSocket.onopen = function(e) {
+        chatSocket.onopen = function (e) {
             console.log("{{ request.user.name }}님이 입장하였습니다");
         };
 
         chatSocket.onclose = function (e) {
 
-             console.log("채팅 소켓이 예기치 않게 닫혔습니다.");
-         };
+            console.log("채팅 소켓이 예기치 않게 닫혔습니다.");
+        };
 
 
         $('#room-name-input').focus();
-        $('#room-name-input').keyup(function(e) {
+        $('#room-name-input').keyup(function (e) {
             if (e.keyCode === 13) {  // enter, return
                 $('#room-name-submit').click();
             }
         });
 
-        $('#room-name-submit').click(function() {
+        $('#room-name-submit').click(function () {
             var message = $('#room-name-input').val();
             var finalData = {
-                'message_json' : message
+                'message_json': message
             };
             chatSocket.send(JSON.stringify(finalData));
 

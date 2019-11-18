@@ -19,7 +19,8 @@ class PostAdmin(SummernoteModelAdmin):
     inlines = [Message]
 
 
+@admin.register(Apply)
+class ApplyAdmin(admin.ModelAdmin):
+    list_display = ['id' , 'user', 'post']
+    list_display_links = ['id']
 
-
-
-admin.site.register(Apply)

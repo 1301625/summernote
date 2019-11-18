@@ -20,7 +20,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         author = self.room_object.author
         user_post_include =  await self.user_Check()
 
-        print(self.scope['user'].id)
+
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -45,7 +45,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
 
         text_data_json = json.loads(text_data)  # room.html chatSocket.send에서 받은 데이터
-        print(text_data_json)
+        #print(text_data_json)
         message = text_data_json['message_json']
 
         #message 공백인 경우 , str 문자열이 아닌경우

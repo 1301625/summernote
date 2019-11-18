@@ -100,7 +100,7 @@
             <a href="" class="apply_disabled btn btn-outline-dark disabled">신청</a>
         {% else %}
            <!--- <a href="{#% url 'apply' %#}" class="btn btn-outline-dark"
-            data-target-id="{{ object.pk }}"
+            data-target-id="{# {{ object.pk }} #}"
             data-message="신청하겠습니까?">신청</a> -->
             <input type="button" class="apply btn btn-outline-dark" value="신청">
         {% endif %}

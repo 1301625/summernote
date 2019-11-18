@@ -245,9 +245,24 @@ def apply_list(request, pk):
 
 
 def room(request, pk):
+
+    #TODO 채팅방 메시지 사용자 분류 재작성
     chat_message = Chatroom.objects.select_related().filter(post_id=pk)
+    author  = Post.objects.get(pk=pk).author_id
+
+    apply = Apply.objects.select_related('user').filter(post_id=pk).values('user_id')
+
+    #apply의 user_id : dict_values 값을 꺼내기위해 리스트 생성
+    dic_convert = []
+    for i in apply:
+        dic_convert.append(list(i.values()))
+    # 2차원 리스트 1차원 리스트로 변경
+    users =sum(dic_convert, [])
+
     content = {
         'chat_message' : chat_message,
+        'users' : users,
+        'author' : author,
         'pk' : pk
     }
     return render(request, 'content/room.html', content)

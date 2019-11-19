@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+
 {% block content %}
 
     <!---메세지-->
@@ -11,99 +14,68 @@
         </ul>
     {% endif %}
 
-    <main role="main">
-        <section>
-        </section>
-        <div class="album py-5 bg-light">
-            <div class="container">
-                <div class="row">
+    <div class="wrapper">
 
-                    {% for ob in object_list %}
+        <ul class="content">
+            {% for ob in object_list %}
+                <li class="content-li">
+                    <div class="content-sub">
+                        <img src="{{ ob.author.thumbnail.url }}" alt="" class="content-img"/>
 
-                        <div class="col-md-4">
-                            <div class="card mb-4 shadow-sm">
-                                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                                     xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
-                                     focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>
-                                    Placeholder</title>
-                                    <rect width="100%" height="100%" fill="#55595c" data-darkreader-inline-fill=""
-                                          style="--darkreader-inline-fill:#404243;"></rect>
-                                    <text x="40%" y="50%" fill="#eceeef" dy=".3em" data-darkreader-inline-fill=""
-                                          style="--darkreader-inline-fill:#eeeeed;">Thumbnail
-                                    </text>
-                                </svg>
-                                <div class="card-body">
-                                    <h5 class="card-text"><a href="{{ ob.get_absolute_url }}"
-                                                             class="text-dark">{{ ob.title }} </a></h5>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="user-thumbnail">
-                                            <svg class="bd-placeholder-img rounded-circle" width="25" height="25"
-                                                 xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
-                                                 focusable="false" role="img" aria-label="Placeholder: 140x140">
-                                                <rect width="100%" height="100%" fill="#777"></rect>
-                                            </svg>
-                                            <img src="{{ ob.author.thumbnail.url }}" alt="">
-                    
+                        <p class="content-author">
+                            {% if ob.author.nickname %}
+                                <small>{{ ob.author.nickname }}</small>
 
-                                            {% if foo.author.nickname %}
-                                                <small class="text-muted">
-                                                    {{ ob.author.nickname }}
-                                                </small>
+                            {% else %}
+                                <small>{{ ob.author.name }}</small>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="content-context">
+                        <h4>
+                            <a href="{{ ob.get_absolute_url }}" class="content-title text-dark">{{ ob.title }} </a>
+                        </h4>
 
-                                            {% else %}
-                                                <small class="text-muted">
-                                                    {{ ob.author.name }}
-                                                </small>
-                                            {% endif %}
-                                        </div>
+                        {% if ob.total_user < ob.user_max_count and not ob.date_overlap %}
+                            <small class="text-muted">{{ ob.total_user }} | {{ ob.user_max_count }} 참여중</small>
+                            <small class="content-data text-muted">{{ ob.deadline }} 까지</small>
+                        {% elif ob.date_overlap or ob.count_overlap %}
+                            <small class="text-muted">참여 마감!</small>
+                        {% endif %}
+                    </div>
 
+                </li>
+            {% endfor %}
+        </ul>
 
-                                        {% if ob.total_user < ob.user_max_count and not ob.date_overlap %}
-                                            <small class="text-muted">{{ ob.total_user }} | {{ ob.user_max_count }} 참여
-                                            </small>
-                                            <small class="text-muted">{{ ob.deadline }} 까지</small>
-                                        {% elif ob.date_overlap or ob.count_overlap %}
-                                            <small class="text-muted">참여 마감!</small>
-                                        {% endif %}
+    </div>
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-            </div>
-        </div>
-    </main>
-
-{#    #}
-{#    {% for foo in object_list %}#}
-{#        <a href="{{ foo.get_absolute_url }}"><p>{{ foo.title }}</p></a>#}
-{#        <p>{{ foo.content |safe |truncatechars:3 }}</p>#}
-{#        {% if foo.total_user < foo.user_max_count and not foo.date_overlap %}#}
-{#            <p>{{ foo.total_user }} | {{ foo.user_max_count }} 참여 </p>#}
-            {# 현재시간 {% now "SHORT_DATE_FORMAT" %}#}
-{#            <p>모집기간 : {{ foo.deadline }} 까지</p>#}
-{#            남은기간 {{ foo.deadline|timeuntil }}#}
-{#        {% elif foo.date_overlap or foo.count_overlap %}#}
-{#            <p>참여 마감!</p>#}
-{#        {% endif %}#}
-{##}
-{#        <!---닉네임 empty 체크 -->#}
-{#        {% if foo.author.nickname %}#}
-{#            <p>#}
-{#                {{ foo.author.nickname }}#}
-{#            </p>#}
-{##}
-{#        {% else %}#}
-{#            <p>#}
-{#                {{ foo.author.name }}#}
-{#            </p>#}
-{#        {% endif %}#}
-{##}
-{#    {% endfor %}#}
+    {#    #}
+    {#    {% for foo in object_list %}#}
+    {#        <a href="{{ foo.get_absolute_url }}"><p>{{ foo.title }}</p></a>#}
+    {#        <p>{{ foo.content |safe |truncatechars:3 }}</p>#}
+    {#        {% if foo.total_user < foo.user_max_count and not foo.date_overlap %}#}
+    {#            <p>{{ foo.total_user }} | {{ foo.user_max_count }} 참여 </p>#}
+    {# 현재시간 {% now "SHORT_DATE_FORMAT" %}#}
+    {#            <p>모집기간 : {{ foo.deadline }} 까지</p>#}
+    {#            남은기간 {{ foo.deadline|timeuntil }}#}
+    {#        {% elif foo.date_overlap or foo.count_overlap %}#}
+    {#            <p>참여 마감!</p>#}
+    {#        {% endif %}#}
+    {##}
+    {#        <!---닉네임 empty 체크 -->#}
+    {#        {% if foo.author.nickname %}#}
+    {#            <p>#}
+    {#                {{ foo.author.nickname }}#}
+    {#            </p>#}
+    {##}
+    {#        {% else %}#}
+    {#            <p>#}
+    {#                {{ foo.author.name }}#}
+    {#            </p>#}
+    {#        {% endif %}#}
+    {##}
+    {#    {% endfor %}#}
 
 
 

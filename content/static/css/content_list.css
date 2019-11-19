@@ -1,0 +1,66 @@
+body, p ,h1,h2,h3,h4,h5 {
+    margin: 0;
+}
+
+li {
+    list-style-type: none;
+}
+
+body{
+    background-color : #ddd;
+}
+
+
+.wrapper {
+    width: 700px;
+    margin: 50px auto;
+}
+
+.content-li {
+    background-color: white;
+    margin: 20px 0;
+    padding: 5px;
+    position: relative;
+}
+
+
+.content-img {
+    position: absolute;
+    width: 2em;
+    left: 2%;
+    top: 25%;
+    border-radius: 20px;
+}
+
+.content-context {
+    margin-left: 3.4em;
+    line-height: 1;
+    margin-bottom: 1em;
+}
+
+.content-title{
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.content-sub{
+    display: inline-block;
+}
+
+.content-author{
+    width: 50px;
+    text-align: center;
+    margin-top : 45px;
+    position: absolute;
+    line-height: 1;
+
+}
+
+.content-author small{
+    margin-top: 50px;
+
+}
+
+.content-data {
+    float: right;
+    margin-right: 20px;
+}

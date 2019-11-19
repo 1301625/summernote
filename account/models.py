@@ -4,6 +4,8 @@ from django.core import validators
 from django.utils import timezone
 
 from phone_field import PhoneField
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 
 
@@ -62,6 +64,8 @@ class user(AbstractBaseUser):
         ]
     )
     phone = PhoneField(unique=True,help_text='Contact phone number')
+    thumbnail = ProcessedImageField(default='default.png' , upload_to='user_image', processors=[ResizeToFill(100,100)],
+                                    format="JPEG", options={'quality': 80})
 
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)

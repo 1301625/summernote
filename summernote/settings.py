@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'phone_field',
     'debug_toolbar',
 
+    'imagekit',
+
+
 ]
 
 MIDDLEWARE = [

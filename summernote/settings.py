@@ -167,3 +167,17 @@ LOGIN_URL = '/account/login'
 
 #채팅방 시간
 DATETIME_FORMAT = "%H:%M"
+
+#이메일 설정
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'chlgnsgk@gmail.com'
+EMAIL_HOST_PASSWORD = 'qhdks365!@'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+
+

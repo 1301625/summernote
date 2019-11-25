@@ -3,60 +3,60 @@
 
 {% block extra_body %}
     <script>
-        $(document).on('click', '.apply', function(){
+        $(document).on('click', '.apply', function () {
             {% if request.user.is_active %}
-            {#$.ajax({#}
-            {#    type : "POST",#}
-            {#    url : '{% url 'apply' pk=object.pk %}',#}
-            {#    data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},#}
-            {#    success : function(response){#}
-            {#        alert(response.message);#}
-            {#        //$('.message').replaceWith('<p class="message">'+response.message+'</p>');#}
-            {#        $(".total-user").html('<p class="total-user">'+response.total_user+"</p>");#}
-            {#        $(".apply").html('<input type="button value="신청취소">');#}
-            {#    },#}
-            {#    fail : function(request, status,error){#}
-            {##}
-            {#    },#}
-            {#    error: function(request, status,error){#}
-            {#        alert("로그인이 필요합니다.");#}
-            {#        window.location.replace("/account/login/");#}
-            {#        //alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);#}
-            {##}
-            {#    },#}
-            //});
-            $.ajax({
-                url : '{% url 'apply' pk=object.pk %}',
-                type : "POST",
-                data :  {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                {#$.ajax({#}
+                {#    type : "POST",#}
+                {#    url : '{% url 'apply' pk=object.pk %}',#}
+                {#    data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},#}
+                {#    success : function(response){#}
+                {#        alert(response.message);#}
+                {#        //$('.message').replaceWith('<p class="message">'+response.message+'</p>');#}
+                {#        $(".total-user").html('<p class="total-user">'+response.total_user+"</p>");#}
+                {#        $(".apply").html('<input type="button value="신청취소">');#}
+                {#    },#}
+                {#    fail : function(request, status,error){#}
+                {##}
+                {#    },#}
+                {#    error: function(request, status,error){#}
+                {#        alert("로그인이 필요합니다.");#}
+                {#        window.location.replace("/account/login/");#}
+                {#        //alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);#}
+                {##}
+                {#    },#}
+                //});
+                $.ajax({
+                    url: '{% url 'apply' pk=object.pk %}',
+                    type: "POST",
+                    data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
 
-            })
-            .done(function(response){
-                alert(response.message);
-                $(".total-user").html('<p class="total-user">'+response.total_user+"</p>");
-                $(".apply").replaceWith("<input type=\"button\" class=\"apply_cancel btn btn-outline-dark\" value=\"신청취소\">")
-            }).fail(function(xhr,status,errorThrow){
-                   $("#text").html("오류가 발생했습니다.<br>")
-                    .append("오류명: " + errorThrown + "<br>")
-                    .append("상태: " + status);
-            });
-                {% else %}
+                })
+                    .done(function (response) {
+                        alert(response.message);
+                        $(".total-user").html('<p class="total-user">' + response.total_user + "</p>");
+                        $(".apply").replaceWith("<input type=\"button\" class=\"apply_cancel btn btn-outline-dark\" value=\"신청취소\">")
+                    }).fail(function (xhr, status, errorThrow) {
+                    $("#text").html("오류가 발생했습니다.<br>")
+                        .append("오류명: " + errorThrown + "<br>")
+                        .append("상태: " + status);
+                });
+            {% else %}
                 alert('로그인이 필요합니다');
-                window.location.href="account/login";
+                window.location.href = "account/login";
             {% endif %}
         });
-        $(document).on('click', '.apply_cancel' ,function(){
+        $(document).on('click', '.apply_cancel', function () {
             $.ajax({
-                url : '{% url 'apply_cancel' pk=object.pk %}',
+                url: '{% url 'apply_cancel' pk=object.pk %}',
                 type: "POST",
-                data : {"csrfmiddlewaretoken": '{{ csrf_token }}'},
+                data: {"csrfmiddlewaretoken": '{{ csrf_token }}'},
             })
-                .done(function(response){
+                .done(function (response) {
                     alert(response.message);
-                    $(".total-user").html('<p class="total-user">'+response.total_user+"</p>")
+                    $(".total-user").html('<p class="total-user">' + response.total_user + "</p>")
                     $(".apply_cancel").replaceWith("<input type=\"button\" class=\"apply btn btn-outline-dark\" value=\"신청\">")
-                }).fail(function(xhr,status,errorThrow){
-                   $("#text").html("오류가 발생했습니다.<br>")
+                }).fail(function (xhr, status, errorThrow) {
+                $("#text").html("오류가 발생했습니다.<br>")
                     .append("오류명: " + errorThrown + "<br>")
                     .append("상태: " + status);
             });
@@ -65,75 +65,83 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ request.user.name }}</h1>
-<!---메세지-->
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}><p class="message">{{ message }}</p> </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-<p id="text"></p>
-<!--오브젝트-->
-<p>{{ object.title }}</p>
-<p>{{ object.content |safe }}</p>
 
-{% if object.total_user < object.user_max_count %}
-    <p class="total-user">{{ object.total_user }}</p>
-    <p>{{ object.user_max_count }}
-        {% elif object.date_overlap or object.count_overlap %}
-    <p>참여 마감</p>
-{% endif %}
-<!--버튼-->
-<!--신청버튼-->
-{% if object.author != request.user %}
+    <!---메세지-->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}><p class="message">{{ message }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <div class="wrapper">
+        <!--오브젝트-->
+        <div class="detail-body">
+            <div class="detail-title">
+                <p>{{ object.title }}</p>
+            </div>
+            <div class="detail-content">
+                <p>{{ object.content|safe }}</p>
 
-    <!---신청자 유무 체크 ---->
-    {% if apply %}
-       <!-- <a href="{% url 'apply_cancel' pk=object.pk %}" class="btn btn-outline-dark">신청 취소</a> -->
-        <input type="button" class="apply_cancel btn btn-outline-dark" value="신청취소">
-    {% else %}
+                <div class="detail-subcontent">
+                    {% if object.total_user < object.user_max_count %}
+                        <p class="total-user">{{ object.total_user }} | {{ object.user_max_count }} 참여 중 </p>
+                    {% elif object.date_overlap or object.count_overlap %}
+                        <p>참여 마감</p>
+                    {% endif %}
+                    <!--버튼-->
+                    <!--신청버튼-->
+                    {% if object.author != request.user %}
+                        <!---신청자 유무 체크 ---->
+                        {% if apply %}
+                            <!-- <a href="{% url 'apply_cancel' pk=object.pk %}" class="btn btn-outline-dark">신청 취소</a> -->
+                            <input type="button" class="apply_cancel btn btn-outline-dark" value="신청취소">
+                        {% else %}
 
-        <!---인원 및 기간 체크 --->
-        {% if object.date_overlap or object.count_overlap %}
-            <a href="" class="apply_disabled btn btn-outline-dark disabled">신청</a>
-        {% else %}
-           <!--- <a href="{#% url 'apply' %#}" class="btn btn-outline-dark"
+                            <!---인원 및 기간 체크 --->
+                            {% if object.date_overlap or object.count_overlap %}
+                                <a href="" class="apply_disabled btn btn-outline-dark disabled">신청</a>
+                            {% else %}
+                                <!--- <a href="{#% url 'apply' %#}" class="btn btn-outline-dark"
             data-target-id="{# {{ object.pk }} #}"
             data-message="신청하겠습니까?">신청</a> -->
-            <input type="button" class="apply btn btn-outline-dark" value="신청">
-        {% endif %}
+                                <input type="button" class="apply btn btn-outline-dark" value="신청">
+                            {% endif %}
 
 
-    {% endif %}
+                        {% endif %}
 
 
-{% endif %}
+                    {% endif %}
 
-{% if object.author == request.user %}
-    <a href="{% url 'apply_list' pk=object.pk %}" class="btn btn-outline-dark">신청자 목록</a>
-    <a href="{% url 'edit' pk=object.pk %}">수정</a>
-{#    <a href="{% url 'delete' pk=object.pk %}" class="ajax-post-confirm"#}
-{#       data-target-id="{{ object.pk }}"#}
-{#       data-message="정말 삭제하시겠습니까?">삭제</a>#}
-    <a href="{% url 'delete' pk=object.pk %}" onclick="return confirm('삭제하겠습니까?');">삭제</a>
+                    {% if object.author == request.user %}
+                        <a href="{% url 'apply_list' pk=object.pk %}" class="btn btn-outline-dark">신청자 목록</a>
+                        <a href="{% url 'edit' pk=object.pk %}">수정</a>
+                        {#    <a href="{% url 'delete' pk=object.pk %}" class="ajax-post-confirm"#}
+                        {#       data-target-id="{{ object.pk }}"#}
+                        {#       data-message="정말 삭제하시겠습니까?">삭제</a>#}
+                        <a href="{% url 'delete' pk=object.pk %}" onclick="return confirm('삭제하겠습니까?');">삭제</a>
 
-{% endif %}
-<a href="{% url 'list' %}" class="btn btn-outline-dark">목록</a>
+                    {% endif %}
+                    <a href="{% url 'list' %}" class="btn btn-outline-dark">목록</a>
+                </div>
+            </div>
+        </div>
 
+        <!---댓글 목록-->
+        {% for comment in object.comment_set.all %}
+            <p>{{ comment }}
+                <small>{{ comment.created|timesince }}전</small>
+            </p>
+        {% endfor %}
 
-    <!---댓글 목록-->
-    {% for comment in object.comment_set.all %}
-        <p>{{ comment }} <small>{{ comment.created|timesince }}전</small></p>
-    {% endfor %}
+        <!-- 댓글 폼 -->
+        <p>{{ comment_form }}</p>
+        <form action="" method="get" class="comment-form">
+            <div class="form-group">{{ comment_form }}</div>
+        </form>
 
-    <!-- 댓글 폼 -->
-    <p>{{ comment_form  }}</p>
-    <form action="" method="get" class="comment-form">
-        <div class="form-group">{{ comment_form }}</div>
-    </form>
-
-    <a href="{% url 'chat' pk=object.pk %}" >채팅방</a>
-
+        <a href="{% url 'chat' pk=object.pk %}">채팅방</a>
+    </div>
 {% endblock %}

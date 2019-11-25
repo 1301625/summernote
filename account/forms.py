@@ -33,7 +33,7 @@ class signupform(forms.ModelForm):
                                'required':'True',
                            }))
 
-    phone = Phone.PhoneFormField()
+    #phone = Phone.PhoneFormField() #삭제 예정
 
 
     password1 = forms.CharField(label='패스워드',required=True,

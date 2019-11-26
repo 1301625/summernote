@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core import validators
 from django.utils import timezone
+from django.core.mail import send_mail
 
 from phone_field import PhoneField
 from imagekit.models import ProcessedImageField
@@ -63,7 +64,7 @@ class user(AbstractBaseUser):
             validators.RegexValidator(r'^[가-힣]+$', "한글 이름만 입력하세요 (예:홍길동)", 'invalid')
         ]
     )
-    phone = PhoneField(unique=True,help_text='Contact phone number')
+    phone = PhoneField(unique=True,help_text='Contact phone number' , blank=True) #삭제 예정
     thumbnail = ProcessedImageField(default='default.png' , upload_to='user_image', processors=[ResizeToFill(100,100)],
                                     format="JPEG", options={'quality': 80})
 
@@ -89,3 +90,9 @@ class user(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """
+        Sends an email to this User.
+        """
+        send_mail(subject, message, from_email, [self.email], **kwargs)

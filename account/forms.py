@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 
 from .models import user
-
+from .validatiors import RegisteredEmailValidator
 
 from phone_field import forms as Phone
 
@@ -51,7 +51,7 @@ class signupform(forms.ModelForm):
 
     class Meta:
         model = user
-        fields = ['email', 'name', 'nickname', 'phone']
+        fields = ['email', 'name', 'nickname']
 
     # 모델에 validator를 적용시키면 폼에서 적용시킬필요가없다
 
@@ -89,9 +89,21 @@ class LoginForm(forms.Form):
             'placeholder': '패스워드',
             'required': True,
         }
-    )
-    )
+    ))
 
     class Meta:
         model = user
         fields = ['email', 'password']
+
+
+
+class VerificationEmailForm(forms.Form):
+    email = forms.EmailField(label="이메일", max_length=255
+                             , help_text="이메일 주소 입력",
+                             error_messages={"invalid": "올바른 이메일 주소를 입력하세요 (예:example@gmail.com)"}
+                             , widget=forms.EmailInput(attrs={'class': 'form-control',
+                                                              'placeholder': '이메일',
+                                                              'required': 'True',
+                                                              'autofocus': True ,}),
+                             validators=(forms.EmailField.default_validators + [RegisteredEmailValidator()])
+                             )

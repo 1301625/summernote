@@ -96,14 +96,9 @@ class LoginForm(forms.Form):
         fields = ['email', 'password']
 
 
-
 class VerificationEmailForm(forms.Form):
-    email = forms.EmailField(label="이메일", max_length=255
-                             , help_text="이메일 주소 입력",
-                             error_messages={"invalid": "올바른 이메일 주소를 입력하세요 (예:example@gmail.com)"}
-                             , widget=forms.EmailInput(attrs={'class': 'form-control',
-                                                              'placeholder': '이메일',
-                                                              'required': 'True',
-                                                              'autofocus': True ,}),
+    email = forms.EmailField(max_length=255,
+                             help_text="이메일 주소 입력",
+                             widget=forms.EmailInput(attrs={'autofocus': True, }),
                              validators=(forms.EmailField.default_validators + [RegisteredEmailValidator()])
                              )

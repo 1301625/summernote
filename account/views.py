@@ -107,9 +107,10 @@ class UserVerificationView(TemplateView):
 
 
 class ResendVerifyEmailView(FormView):
+
     model = get_user_model()
     form_class =  VerificationEmailForm
-    success_url = '/account/login'
+    success_url = '/account/login/'
     template_name = 'account/resend_verify_email.html'
     email_template_name = 'account/registration_verification.html'
 
@@ -135,4 +136,5 @@ class ResendVerifyEmailView(FormView):
 
         else:
             self.send_verification_email(user)
+
         return super().form_valid(form)

@@ -92,7 +92,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1',32769)],
+            "hosts": [('127.0.0.1',32768)], #radis port 확인할것
         },
     },
 }
@@ -178,6 +178,8 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
+#이메일 미인증(is_activate=fasle) 유저 로그인 허용
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
 
 
 

@@ -7,7 +7,7 @@
         인증이메일 보내기
     </div>
     <div class="panel-body">
-        <form action="." method="post">
+        <form action="" method="post">
             {% csrf_token %}
             <b class="">재발송할 이메일주소를 입력해주세요.</b>
             {% for field in form %}
